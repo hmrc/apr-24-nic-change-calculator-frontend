@@ -16,7 +16,17 @@
 
 package models
 
+import models.OverallResult.{LessNiDue, MinimalDifference, NoDifference}
+
 import scala.math.BigDecimal.RoundingMode.HALF_DOWN
+
+sealed trait OverallResult
+
+object OverallResult {
+  case object NoDifference extends OverallResult
+  case object MinimalDifference extends OverallResult
+  case object LessNiDue extends OverallResult
+}
 
 final case class Calculation private(
                                       annualSalary: BigDecimal,
@@ -25,6 +35,21 @@ final case class Calculation private(
                                       apr24EstimatedNic: BigDecimal
                                     ) {
 
+  lazy val mar24Apr24MonthlySaving: BigDecimal =
+    (mar24EstimatedNic - apr24EstimatedNic).setScale(0, HALF_DOWN)
+
+  lazy val dec23Apr24MonthlySaving: BigDecimal =
+    (dec23EstimatedNic - apr24EstimatedNic).setScale(0, HALF_DOWN)
+
+  lazy val mar24Apr24OverallResult: OverallResult =
+    if (mar24EstimatedNic == apr24EstimatedNic) NoDifference
+    else if (mar24Apr24MonthlySaving == 0)      MinimalDifference
+    else                                        LessNiDue
+
+  lazy val dec23Apr24OverallResult: OverallResult =
+    if (dec23EstimatedNic == apr24EstimatedNic) NoDifference
+    else if (dec23Apr24MonthlySaving == 0)      MinimalDifference
+    else                                        LessNiDue
 }
 
 object Calculation {

@@ -16,13 +16,15 @@
 
 package models
 
-import org.scalacheck.Gen
+import org.scalacheck.{Gen, Shrink}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 
 class CalculationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks {
 
+  implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
+  
   ".dec23EstimatedNic" - {
 
     "must be 0 when the salary is £12,570 or less (below threshold)" in {
@@ -140,6 +142,112 @@ class CalculationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyC
     "must be £252.33 when the salary is £50,870 (NICs accrue at 2% for income above the upper earnings limit)" in {
 
       Calculation(BigDecimal(50870)).apr24EstimatedNic mustEqual BigDecimal(252.33)
+    }
+  }
+
+  ".mar24Apr24MonthlySaving" - {
+
+    "must be zero when the difference between Mar 24 and Apr 24 estimates is £0.50 or less (rounding down)" in {
+
+      val calculation = Calculation(BigDecimal(12874))
+
+      calculation.mar24EstimatedNic - calculation.apr24EstimatedNic mustEqual BigDecimal(0.5)
+      calculation.mar24Apr24MonthlySaving mustEqual 0
+    }
+
+    "must be £1 when the difference between Mar 24 and Apr 24 estimates is £0.51 (rounding up)" in {
+
+      val calculation = Calculation(BigDecimal(12875))
+
+      calculation.mar24EstimatedNic - calculation.apr24EstimatedNic mustEqual BigDecimal(0.51)
+      calculation.mar24Apr24MonthlySaving mustEqual BigDecimal(1)
+    }
+
+    "must be £63 when the salary is £50,270 or above (above upper earnings limit, attracting the maximum saving)" in {
+
+      forAll(Gen.choose[BigDecimal](50270, 1000000)) { salary =>
+        Calculation(salary).mar24Apr24MonthlySaving mustEqual BigDecimal(63)
+      }
+    }
+  }
+
+  ".dec24Apr24MonthlySaving" - {
+
+    "must be zero when the difference between Dec 23 and Apr 24 estimates is £0.50 or less (rounding down)" in {
+
+      val calculation = Calculation(BigDecimal(12720))
+
+      calculation.dec23EstimatedNic - calculation.apr24EstimatedNic mustEqual BigDecimal(0.5)
+      calculation.dec23Apr24MonthlySaving mustEqual 0
+    }
+
+    "must be £1 when the difference between Dec 23 and Apr 24 estimates is £0.51 (rounding up)" in {
+
+      val calculation = Calculation(BigDecimal(12722))
+
+      calculation.dec23EstimatedNic - calculation.apr24EstimatedNic mustEqual BigDecimal(0.51)
+      calculation.dec23Apr24MonthlySaving mustEqual BigDecimal(1)
+    }
+
+    "must be £126 when the salary is £50,270 or above (above upper earnings limit, attracting the maximum saving)" in {
+
+      forAll(Gen.choose[BigDecimal](50270, 1000000)) { salary =>
+        Calculation(salary).dec23Apr24MonthlySaving mustEqual BigDecimal(126)
+      }
+    }
+  }
+
+  ".dec23Apr24OverallResult" - {
+
+    "must be No Difference when the estimated NICs for Dec 23 and Apr 24 are the same" in {
+
+      forAll(Gen.choose[BigDecimal](1, BigDecimal(12570))) { salary =>
+
+        Calculation(salary).dec23Apr24OverallResult mustEqual OverallResult.NoDifference
+      }
+    }
+
+    "must be Minimal Difference when the estimated NICs for Dec 23 are up to 50p higher than for Apr 24" in {
+
+      forAll(Gen.choose(BigDecimal(12572), BigDecimal(12721))) { salary =>
+
+        Calculation(salary).dec23Apr24OverallResult mustEqual OverallResult.MinimalDifference
+      }
+    }
+
+    "must be LessNiDue when the estimated NICs for Dec 23 are more than 50p higher than for Apr 24" in {
+
+      forAll(Gen.choose(BigDecimal(12722), BigDecimal(1000000))) { salary =>
+
+        Calculation(salary).dec23Apr24OverallResult mustEqual OverallResult.LessNiDue
+      }
+    }
+  }
+
+  ".mar24Apr24OverallResult" - {
+
+    "must be No Difference when the estimated NICs for Dec 23 and Apr 24 are the same" in {
+
+      forAll(Gen.choose[BigDecimal](1, BigDecimal(12570))) { salary =>
+
+        Calculation(salary).mar24Apr24OverallResult mustEqual OverallResult.NoDifference
+      }
+    }
+
+    "must be Minimal Difference when the estimated NICs for Dec 23 are up to 50p higher than for Apr 24" in {
+
+      forAll(Gen.choose(BigDecimal(12575), BigDecimal(12871))) { salary =>
+
+        Calculation(salary).mar24Apr24OverallResult mustEqual OverallResult.MinimalDifference
+      }
+    }
+
+    "must be LessNiDue when the estimated NICs for Dec 23 are more than 50p higher than for Apr 24" in {
+
+      forAll(Gen.choose(BigDecimal(128756), BigDecimal(1000000))) { salary =>
+
+        Calculation(salary).mar24Apr24OverallResult mustEqual OverallResult.LessNiDue
+      }
     }
   }
 }
