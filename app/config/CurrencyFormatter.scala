@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    govukButton: GovukButton
-)
+package config
 
-@()(implicit request: Request[_], messages: Messages)
-
-@layout(
-    pageTitle    = titleNoForm(messages("signedOut.title")),
-    timeout      = false,
-    showSignOut  = false
-) {
-
-    <h1 class="govuk-heading-xl">@messages("signedOut.heading")</h1>
-
-    <p class="govuk-body">@messages("signedOut.guidance")</p>
-
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.signIn"))
-                .asLink(routes.IndexController.onPageLoad.url)
-        )
-    </p>
+trait CurrencyFormatter {
+  def currencyFormat(amt: BigDecimal): String = f"£$amt%,1.2f".replace(".00","")
 }
+
+object CurrencyFormatter extends CurrencyFormatter

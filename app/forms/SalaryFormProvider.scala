@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2024 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,29 +12,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@this(
-    layout: templates.Layout,
-    govukButton: GovukButton
-)
+package forms
 
-@()(implicit request: Request[_], messages: Messages)
+import forms.mappings.Mappings
+import play.api.data.Form
 
-@layout(
-    pageTitle    = titleNoForm(messages("signedOut.title")),
-    timeout      = false,
-    showSignOut  = false
-) {
+import javax.inject.Inject
 
-    <h1 class="govuk-heading-xl">@messages("signedOut.heading")</h1>
+class SalaryFormProvider @Inject() extends Mappings {
 
-    <p class="govuk-body">@messages("signedOut.guidance")</p>
-
-    <p class="govuk-body">
-        @govukButton(
-            ButtonViewModel(messages("site.signIn"))
-                .asLink(routes.IndexController.onPageLoad.url)
-        )
-    </p>
+  def apply(): Form[BigDecimal] =
+    Form(
+      "value" -> currency(
+        s"salary.error.required",
+        s"salary.error.invalidNumeric",
+        s"salary.error.nonNumeric")
+        .verifying(maximumCurrency(1000000000, s"salary.error.aboveMaximum"))
+    )
 }
