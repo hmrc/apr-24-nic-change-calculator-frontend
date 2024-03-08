@@ -1,0 +1,80 @@
+@*
+ * Copyright 2022 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import config.CurrencyFormatter.currencyFormat
+@import models.OverallResult._
+@import viewmodels.ResultViewModel
+
+@this(
+        layout: templates.Layout,
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList,
+        formHelper: FormWithCSRF,
+        govukTabs: GovukTabs,
+        dec23Apr24Tab: components.Dec23Apr24Tab,
+        mar24Apr24Tab: components.Mar24Apr24Tab
+)
+
+@(viewModel: ResultViewModel)(implicit request: Request[_], messages: Messages)
+
+@layout(
+    pageTitle = messages("result.title"),
+    timeout = true
+) {
+
+    <h1 class="govuk-heading-l">@messages("result.heading")</h1>
+
+
+    @govukTabs(Tabs(
+        items = Seq(
+            TabItem(
+                label = messages("result.tab.mar24"),
+                id = Some("mar24-apr24"),
+                panel = TabPanel(
+                    content = HtmlContent(mar24Apr24Tab(viewModel))
+                )
+            ),
+            TabItem(
+                label = messages("result.tab.dec23"),
+                id = Some("dec23-apr24"),
+                panel = TabPanel(
+                    content = HtmlContent(dec23Apr24Tab(viewModel))
+                )
+            )
+        )
+    ))
+
+
+
+    <p class="govuk-body">@messages("result.guidance.p2")</p>
+
+    <p class="govuk-body">
+        @messages("result.guidance.p3")
+        <a href="@messages("result.guidance.p3.link.href")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("result.guidance.p3.link.text")</a>.
+    </p>
+
+    <p class="govuk-body">
+        @messages("result.guidance.p4.1")
+        <a href="@messages("result.guidance.p4.link.href")" class="govuk-link" target="_blank" rel="noopener noreferrer">@messages("result.guidance.p4.link.text")</a>
+        @messages("result.guidance.p4.2")
+    </p>
+
+    @formHelper(action = routes.ResultController.onSubmit()) {
+        @govukButton(
+            ButtonViewModel(messages("site.startAgain"))
+        )
+    }
+}
