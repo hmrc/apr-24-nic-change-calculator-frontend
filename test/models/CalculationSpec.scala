@@ -24,7 +24,7 @@ import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 class CalculationSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks {
 
   implicit val dontShrink: Shrink[String] = Shrink.shrinkAny
-  
+
   ".dec23EstimatedNic" - {
 
     "must be 0 when the salary is £12,570 or less (below threshold)" in {
