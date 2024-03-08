@@ -22,7 +22,10 @@
         layout: templates.Layout,
         govukButton: GovukButton,
         govukSummaryList: GovukSummaryList,
-        formHelper: FormWithCSRF
+        formHelper: FormWithCSRF,
+        govukTabs: GovukTabs,
+        dec23Apr24Tab: components.Dec23Apr24Tab,
+        mar24Apr24Tab: components.Mar24Apr24Tab
 )
 
 @(viewModel: ResultViewModel)(implicit request: Request[_], messages: Messages)
@@ -32,17 +35,29 @@
     timeout = true
 ) {
 
-    <div class="govuk-panel govuk-panel--confirmation text-overflow">
-        <h1 class="govuk-panel__title">
-            @messages("result.heading")
-        </h1>
-    </div>
+    <h1 class="govuk-heading-l">@messages("result.heading")</h1>
 
-    <h2 class="govuk-heading-m">@messages("result.h2")</h2>
 
-    <div class="results">
-        @govukSummaryList(viewModel.summaryList)
-    </div>
+    @govukTabs(Tabs(
+        items = Seq(
+            TabItem(
+                label = messages("result.tab.mar24"),
+                id = Some("mar24-apr24"),
+                panel = TabPanel(
+                    content = HtmlContent(mar24Apr24Tab(viewModel))
+                )
+            ),
+            TabItem(
+                label = messages("result.tab.dec23"),
+                id = Some("dec23-apr24"),
+                panel = TabPanel(
+                    content = HtmlContent(dec23Apr24Tab(viewModel))
+                )
+            )
+        )
+    ))
+
+
 
     <p class="govuk-body">@messages("result.guidance.p2")</p>
 

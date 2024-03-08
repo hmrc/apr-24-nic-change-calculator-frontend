@@ -29,15 +29,46 @@ import java.time.format.DateTimeFormatter
 
 case class ResultViewModel(calculation: Calculation)(implicit messages: Messages) {
 
-  private val rows: List[SummaryListRow] = List(
+  private val dec23Apr24Rows: List[SummaryListRow] = List(
     SummaryListRowViewModel(
       key     = s"result.annualSalary",
       value   = ValueViewModel(currencyFormat(calculation.annualSalary)),
       actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.dec23EstimatedNic",
+      value   = ValueViewModel(currencyFormat(calculation.dec23EstimatedNic)),
+      actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.apr24EstimatedNic",
+      value   = ValueViewModel(currencyFormat(calculation.apr24EstimatedNic)),
+      actions = Nil
     )
   )
 
-  val summaryList: SummaryList =
-    SummaryList(rows).withCssClass("govuk-summary-list--long-key")
+  private val mar24Apr24Rows: List[SummaryListRow] = List(
+    SummaryListRowViewModel(
+      key     = s"result.annualSalary",
+      value   = ValueViewModel(currencyFormat(calculation.annualSalary)),
+      actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.mar24EstimatedNic",
+      value   = ValueViewModel(currencyFormat(calculation.mar24EstimatedNic)),
+      actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.apr24EstimatedNic",
+      value   = ValueViewModel(currencyFormat(calculation.apr24EstimatedNic)),
+      actions = Nil
+    )
+  )
+
+  val dec23Apr24SummaryList: SummaryList =
+    SummaryList(dec23Apr24Rows).withCssClass("govuk-summary-list--long-key")
+
+  val mar24Apr24SummaryList: SummaryList =
+    SummaryList(mar24Apr24Rows).withCssClass("govuk-summary-list--long-key")
 }
 
