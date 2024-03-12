@@ -16,6 +16,7 @@
 
 package controllers
 
+import connectors.CalculationConnector
 import controllers.actions.{DataRetrievalAction, IdentifierAction}
 import models.{Calculation, NormalMode}
 import pages.SalaryPage
@@ -36,11 +37,12 @@ class ResultController  @Inject()(
                                    getData: DataRetrievalAction,
                                    val controllerComponents: MessagesControllerComponents,
                                    view: ResultView,
-                                   sessionRepository: SessionRepository
+                                   sessionRepository: SessionRepository,
+                                   calculationConnector: CalculationConnector
                                  )(implicit ec: ExecutionContext)
   extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
+  def onPageLoad: Action[AnyContent] = (identify andThen getData).async {
     implicit request =>
 
       request.userAnswers.flatMap { answers =>
@@ -49,11 +51,16 @@ class ResultController  @Inject()(
             calculation =>
               val viewModel = ResultViewModel(calculation)
 
-              Ok(view(viewModel))
+              calculationConnector.submit(calculation).map { _ =>
+                Ok(view(viewModel))
+              }.recover { e: Throwable =>
+                logger.error(s"Failed to send calculation to backend: ${e.getMessage}")
+                Ok(view(viewModel))
+              }
           }
       }.getOrElse {
         logger.warn("User has no user answers, redirecting to the guidance page")
-        Redirect(routes.IndexController.onPageLoad)
+        Future.successful(Redirect(routes.IndexController.onPageLoad))
       }
   }
 

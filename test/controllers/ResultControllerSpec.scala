@@ -18,7 +18,8 @@ package controllers
 
 
 import base.SpecBase
-import models.{Calculation, NormalMode}
+import connectors.CalculationConnector
+import models.{Calculation, Done, NormalMode}
 import org.mockito.ArgumentMatchers.{any, eq => eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -36,13 +37,19 @@ class ResultControllerSpec extends SpecBase with MockitoSugar {
 
   "Result Controller" - {
 
-    "must show the correct view" in {
+    "must save the calculation then return OK and the correct view" in {
 
       val salary = BigDecimal(1)
 
       val answers = emptyUserAnswers.set(SalaryPage, salary).success.value
 
-      val application = applicationBuilder(Some(answers)).build()
+      val mockConnector = mock[CalculationConnector]
+      when(mockConnector.submit(any())(any())).thenReturn(Future.successful(Done))
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[CalculationConnector].toInstance(mockConnector))
+          .build()
 
       running(application) {
         val request = FakeRequest(GET, routes.ResultController.onPageLoad().url)
@@ -55,6 +62,36 @@ class ResultControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         contentAsString(result) mustEqual view(viewModel)(request, messages(application)).toString
+        verify(mockConnector, times(1)).submit(eqTo(calculation))(any())
+      }
+    }
+
+    "must return OK and the correct view for a GET when saving the calculation fails" in {
+
+      val salary = BigDecimal(1)
+
+      val answers = emptyUserAnswers.set(SalaryPage, salary).success.value
+
+      val mockConnector = mock[CalculationConnector]
+      when(mockConnector.submit(any())(any())).thenReturn(Future.failed(new RuntimeException("foo")))
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[CalculationConnector].toInstance(mockConnector))
+          .build()
+
+      running(application) {
+        val request = FakeRequest(GET, routes.ResultController.onPageLoad().url)
+
+        val result = route(application, request).value
+
+        val view        = application.injector.instanceOf[ResultView]
+        val calculation = Calculation(salary)
+        val viewModel   = ResultViewModel(calculation)(messages(application))
+
+        status(result) mustEqual OK
+        contentAsString(result) mustEqual view(viewModel)(request, messages(application)).toString
+        verify(mockConnector, times(1)).submit(eqTo(calculation))(any())
       }
     }
 
