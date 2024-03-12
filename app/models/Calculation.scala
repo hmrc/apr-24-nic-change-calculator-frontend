@@ -17,6 +17,8 @@
 package models
 
 import models.OverallResult.{LessNiDue, MinimalDifference, NoDifference}
+import play.api.libs.functional.syntax._
+import play.api.libs.json._
 
 import scala.math.BigDecimal.RoundingMode.HALF_DOWN
 
@@ -72,4 +74,11 @@ object Calculation {
 
     Calculation(annualSalary, dec23EstimatedNic, mar24EstimatedNic, apr24EstimatedNic)
   }
+
+  implicit lazy val writes: OWrites[Calculation] = (
+    (__ \ "annualSalary").write[BigDecimal] and
+    (__ \ "dec23EstimatedNic").write[BigDecimal] and
+    (__ \ "mar24EstimatedNic").write[BigDecimal] and
+    (__ \ "apr24EstimatedNic").write[BigDecimal]
+  )(c => (c.annualSalary, c.dec23EstimatedNic, c.mar24EstimatedNic, c.apr24EstimatedNic))
 }
