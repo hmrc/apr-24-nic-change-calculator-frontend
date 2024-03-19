@@ -44,6 +44,11 @@ case class ResultViewModel(calculation: Calculation)(implicit messages: Messages
       key     = s"result.apr24EstimatedNic",
       value   = ValueViewModel(currencyFormat(calculation.apr24EstimatedNic)),
       actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.dec23Apr24AnnualSaving",
+      value   = ValueViewModel(currencyFormat(calculation.dec23Apr24AnnualSaving)),
+      actions = Nil
     )
   )
 
@@ -61,6 +66,11 @@ case class ResultViewModel(calculation: Calculation)(implicit messages: Messages
     SummaryListRowViewModel(
       key     = s"result.apr24EstimatedNic",
       value   = ValueViewModel(currencyFormat(calculation.apr24EstimatedNic)),
+      actions = Nil
+    ),
+    SummaryListRowViewModel(
+      key     = s"result.mar24Apr24AnnualSaving",
+      value   = ValueViewModel(currencyFormat(calculation.mar24Apr24AnnualSaving)),
       actions = Nil
     )
   )

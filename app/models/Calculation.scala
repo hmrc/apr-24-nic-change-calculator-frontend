@@ -48,10 +48,17 @@ final case class Calculation private(
     else if (mar24Apr24MonthlySaving == 0)      MinimalDifference
     else                                        LessNiDue
 
-  lazy val dec23Apr24OverallResult: OverallResult =
+  lazy val dec23Apr24OverallResult: OverallResult = {
     if (dec23EstimatedNic == apr24EstimatedNic) NoDifference
-    else if (dec23Apr24MonthlySaving == 0)      MinimalDifference
-    else                                        LessNiDue
+    else if (dec23Apr24MonthlySaving == 0) MinimalDifference
+    else LessNiDue
+  }
+
+  lazy val dec23Apr24AnnualSaving: BigDecimal =
+    ((dec23EstimatedNic - apr24EstimatedNic) * 12).setScale(0, HALF_DOWN)
+
+  lazy val mar24Apr24AnnualSaving: BigDecimal =
+    ((mar24EstimatedNic - apr24EstimatedNic) * 12).setScale(0, HALF_DOWN)
 }
 
 object Calculation {
