@@ -51,5 +51,6 @@
     <p class="govuk-body">@messages("result.guidance.mar24.p1.minimalDifference")</p>
 } else {
     <p class="govuk-body">@Html(messages("result.guidance.mar24.p1.lessNiDue", currencyFormat(results.calculation.mar24Apr24MonthlySaving)))</p>
+    <p class="govuk-body">@Html(messages("result.guidance.mar24.p2.lessNiDue", currencyFormat(results.calculation.mar24Apr24AnnualSaving)))</p>
     <p class="govuk-body">@messages("result.guidance.disclaimer")</p>
 }

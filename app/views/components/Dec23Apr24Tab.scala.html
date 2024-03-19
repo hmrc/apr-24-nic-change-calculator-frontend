@@ -52,6 +52,8 @@
 <p class="govuk-body">@messages("result.guidance.dec23.p2.minimalDifference")</p>
 } else {
     <p class="govuk-body">@Html(messages("result.guidance.dec23.p1.lessNiDue", currencyFormat(results.calculation.dec23Apr24MonthlySaving)))</p>
-    <p class="govuk-body">@messages("result.guidance.dec23.p2.lessNiDue")</p>
+    <p class="govuk-body">@Html(messages("result.guidance.dec23.p2.lessNiDue", currencyFormat(results.calculation.dec23Apr24AnnualSaving)))</p>
+    <p class="govuk-body">@Html(messages("result.guidance.dec23.p3.lessNiDue"))</p>
+    <p class="govuk-body">@Html(messages("result.guidance.dec23.p4.lessNiDue"))</p>
     <p class="govuk-body">@messages("result.guidance.disclaimer")</p>
 }
