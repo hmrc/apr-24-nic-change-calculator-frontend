@@ -31,7 +31,7 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     hmrcScripts: HmrcScripts,
-    alphaBanner: StandardAlphaBanner
+    betaBanner: StandardBetaBanner
 )
 
 @(pageTitle: String, backLink: Option[BackLink] = None, timeout: Boolean = true, showSignOut: Boolean = false, showServiceName: Boolean = true)(contentBlock: Html)(implicit request: Request[_], messages: Messages)
@@ -93,7 +93,7 @@
             signOutHref = None,
             language = if(messages.lang.code == "cy") Cy else En,
             assetsPath = uk.gov.hmrc.hmrcfrontend.controllers.routes.Assets.at("govuk/images").url,
-            phaseBanner = Some(alphaBanner(appConfig.feedbackUrl.toString()))
+            phaseBanner = Some(betaBanner(appConfig.feedbackUrl.toString()))
         ))
     } else {
         @hmrcHeader(Header(
@@ -103,7 +103,7 @@
             signOutHref = None,
             language = if(messages.lang.code == "cy") Cy else En,
             assetsPath = uk.gov.hmrc.hmrcfrontend.controllers.routes.Assets.at("govuk/images").url,
-            phaseBanner = Some(alphaBanner(appConfig.feedbackUrl.toString()))
+            phaseBanner = Some(betaBanner(appConfig.feedbackUrl.toString()))
         ))
     }
 }
