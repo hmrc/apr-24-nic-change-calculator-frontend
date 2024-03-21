@@ -21,8 +21,9 @@
 @()(implicit request: Request[_], messages: Messages)
 
     @layout(
-        pageTitle = s"${messages("index.title")} - ${messages("site.govuk")}",
-        timeout   = false
+        pageTitle       = s"${messages("index.title")} - ${messages("site.govuk")}",
+        timeout         = false,
+        showServiceName = false
     ) {
 
         <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
