@@ -25,7 +25,7 @@
 @(results: ResultViewModel)(implicit messages: Messages)
 
 <div class="govuk-panel govuk-panel--confirmation text-overflow">
-    <div class="govuk-panel__body">
+    <h2 class="govuk-panel__title">
         @if(results.calculation.mar24Apr24OverallResult == NoDifference) {
             @messages("result.panel.mar24.noDifference")
         } else if(results.calculation.mar24Apr24OverallResult == MinimalDifference) {
@@ -33,10 +33,10 @@
         } else {
         @messages("result.panel.mar24.lessNiDue", currencyFormat(results.calculation.mar24Apr24MonthlySaving))
         }
-    </div>
+    </h2>
 </div>
 
-<h2 class="govuk-heading-m">@messages("result.h2")</h2>
+<h3 class="govuk-heading-m">@messages("result.h3")</h3>
 
 <div class="results">
     @govukSummaryList(results.mar24Apr24SummaryList)
