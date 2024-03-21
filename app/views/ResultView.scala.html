@@ -31,12 +31,11 @@
 @(viewModel: ResultViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
-    pageTitle = messages("result.title"),
+    pageTitle = titleNoForm(messages("result.title")),
     timeout = true
 ) {
 
     <h1 class="govuk-heading-l">@messages("result.heading")</h1>
-
 
     @govukTabs(Tabs(
         items = Seq(
@@ -56,8 +55,6 @@
             )
         )
     ))
-
-
 
     <p class="govuk-body">@messages("result.guidance.p2")</p>
 
