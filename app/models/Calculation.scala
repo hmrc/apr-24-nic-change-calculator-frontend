@@ -86,6 +86,8 @@ object Calculation {
     (__ \ "annualSalary").write[BigDecimal] and
     (__ \ "dec23EstimatedNic").write[BigDecimal] and
     (__ \ "mar24EstimatedNic").write[BigDecimal] and
-    (__ \ "apr24EstimatedNic").write[BigDecimal]
-  )(c => (c.annualSalary, c.dec23EstimatedNic, c.mar24EstimatedNic, c.apr24EstimatedNic))
+    (__ \ "apr24EstimatedNic").write[BigDecimal] and
+    (__ \ "dec23Apr24AnnualSaving").write[BigDecimal] and
+    (__ \ "mar24Apr24AnnualSaving").write[BigDecimal]
+  )(c => (c.annualSalary, c.dec23EstimatedNic, c.mar24EstimatedNic, c.apr24EstimatedNic, c.dec23Apr24AnnualSaving, c.mar24Apr24AnnualSaving))
 }
