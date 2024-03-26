@@ -1,22 +1,9 @@
 service.name = Estimate how the April 2024 National Insurance contributions changes will affect you
 
-site.back = Back
-site.remove = Remove
-site.change = Change
-site.no = No
-site.yes = Yes
 site.continue = Continue
 site.start = Start now
 site.startAgain = Start again
-site.signIn = Sign in
 site.govuk = GOV.UK
-
-date.day = Day
-date.month = Month
-date.year = Year
-date.error.day = day
-date.error.month = month
-date.error.year = year
 
 timeout.title = For your security
 timeout.message = We will delete your answers in
